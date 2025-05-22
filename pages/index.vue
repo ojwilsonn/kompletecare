@@ -10,7 +10,7 @@
           <button class="btn btn-light btn-sm me-2">Take a tour</button>
           <button class="btn btn-light btn-sm me-2"><i class="bi bi-bell"></i></button>
           <button class="btn btn-light btn-sm rounded-circle">
-            button
+            <!-- <img src="/placeholder.svg?height=30&width=30" class="rounded-circle" alt="Profile" /> -->
           </button>
         </div>
         
@@ -55,15 +55,12 @@ const tests = ref({});
 </script>
 
 <style>
-@import 'bootstrap/dist/css/bootstrap.min.css';
-@import 'bootstrap-icons/font/bootstrap-icons.css';
-
 .wrapper {
   min-height: 100vh;
 }
 
 .content-wrapper {
   flex: 1;
-  background-color: #f8f9fa;
+  background-color: #f5f5fb;
 }
 </style>

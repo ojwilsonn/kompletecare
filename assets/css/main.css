@@ -1,22 +1,26 @@
+
+@import "bootstrap/scss/bootstrap";
+
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f8f9fa;
+  background-color: #ffffff;
 }
 
 .btn-primary {
-  background-color: #382f90;
-  border-color: #382f90;
+  background-color: #382f90 !important;
+  border-color: #382f90 !important;
 }
 
 .btn-primary:hover, .btn-primary:focus {
-  background-color: #3e3f9a;
-  border-color: #3e3f9a;
+  background-color: #3e3f9a !important;
+  border-color: #3e3f9a !important;
 }
 
 .text-primary {
-  color: #4a4cb7 !important;
+  color: #382f90 !important;
 }
 
 .bg-primary {
-  background-color: #4a4cb7 !important;
+  background-color: #382f90 !important;
 }

@@ -1,0 +1,22 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+
+.btn-primary {
+  background-color: #382f90;
+  border-color: #382f90;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #3e3f9a;
+  border-color: #3e3f9a;
+}
+
+.text-primary {
+  color: #4a4cb7 !important;
+}
+
+.bg-primary {
+  background-color: #4a4cb7 !important;
+}

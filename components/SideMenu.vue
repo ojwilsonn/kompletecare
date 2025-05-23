@@ -24,12 +24,12 @@
 const menuItems = [
   { name: "Profile", icon: "bi-person-fill" },
   { name: "Services", icon: "bi-dropbox" },
-  { name: "Medical Records", icon: "bi-file-medical" },
-  { name: "Care Wallet", icon: "bi-wallet2" },
-  { name: "Messages", icon: "bi-chat-left-text" },
-  { name: "Resources", icon: "bi-folder" },
-  { name: "Account Settings", icon: "bi-gear" },
-  { name: "Contact Support", icon: "bi-headset" },
+  { name: "Medical Records", icon: "bi-file-medical-fill" },
+  { name: "Care Wallet", icon: "bi-wallet-fill" },
+  { name: "Messages", icon: "bi-chat-left-fill" },
+  { name: "Resources", icon: "bi-stack" },
+  { name: "Account Settings", icon: "bi-gear-fill" },
+  { name: "Contact Support", icon: "bi-crosshair2" },
   { name: "Logout", icon: "bi-box-arrow-right" },
 ];
 </script>

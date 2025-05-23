@@ -10,7 +10,7 @@
         </button>
       </div>
     </div>
-    
+
     <!-- Loading State -->
     <div v-else-if="queryLoading" class="text-center py-4">
       <div class="spinner-border text-primary" role="status">
@@ -18,38 +18,56 @@
       </div>
       <p class="mt-2 text-muted">Loading investigations...</p>
     </div>
-    
+
     <!-- Main Form -->
     <form v-else @submit.prevent="saveRecord">
       <div v-if="error" class="alert alert-danger mb-3">{{ error }}</div>
       <div v-if="success" class="alert alert-success mb-3">{{ success }}</div>
-      
-      <!-- Data Status Info -->
+
       <div v-if="showDataStatus" class="alert alert-info mb-3">
         <div class="d-flex justify-content-between align-items-center">
           <span>
-            <strong>Data Status:</strong> 
-            Showing {{ totalInvestigationsCount }} investigations 
-            ({{ apiInvestigationsCount }} from API{{ fallbackCount > 0 ? `, ${fallbackCount} from design fallback` : '' }})
+            <strong>Data Status:</strong>
+            Showing {{ totalInvestigationsCount }} investigations ({{
+              apiInvestigationsCount
+            }}
+            from API{{
+              fallbackCount > 0
+                ? `, ${fallbackCount} from design fallback`
+                : ""
+            }})
           </span>
-          <button @click="showDataStatus = false" class="btn-close btn-sm" type="button"></button>
+          <button
+            @click="showDataStatus = false"
+            class="btn-close btn-sm"
+            type="button"
+          ></button>
         </div>
       </div>
-      
+
       <!-- X-Ray Section -->
       <div class="investigation-section">
-        <h3 class="section-title">X-Ray</h3>
+        <h3 class="section-text">X-Ray</h3>
         <div class="investigation-grid">
-          <div v-for="investigation in xrayInvestigations" :key="investigation.id" class="investigation-item">
+          <div
+            v-for="investigation in xrayInvestigations"
+            :key="investigation.id"
+            class="investigation-item"
+          >
             <label class="investigation-checkbox">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 :value="investigation.id"
                 v-model="selectedInvestigations"
-              >
+              />
               <span class="checkmark"></span>
               {{ investigation.title }}
-              <span v-if="investigation.isFromAPI === false" class="fallback-indicator" title="From design fallback">*</span>
+              <span
+                v-if="investigation.isFromAPI === false"
+                class="fallback-indicator"
+                title="From design fallback"
+                >*</span
+              >
             </label>
           </div>
         </div>
@@ -59,39 +77,56 @@
       <div class="investigation-section">
         <h3 class="section-title">Ultrasound Scan</h3>
         <div class="investigation-grid">
-          <div v-for="investigation in ultrasoundInvestigations" :key="investigation.id" class="investigation-item">
+          <div
+            v-for="investigation in ultrasoundInvestigations"
+            :key="investigation.id"
+            class="investigation-item"
+          >
             <label class="investigation-checkbox">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 :value="investigation.id"
                 v-model="selectedInvestigations"
-              >
+              />
               <span class="checkmark"></span>
               {{ investigation.title }}
-              <span v-if="investigation.isFromAPI === false" class="fallback-indicator" title="From design fallback">*</span>
+              <span
+                v-if="investigation.isFromAPI === false"
+                class="fallback-indicator"
+                title="From design fallback"
+                >*</span
+              >
             </label>
           </div>
         </div>
       </div>
 
       <!-- CT Scan & MRI Section -->
-      <div class="investigation-section">
+      <div class="investigation-section section-title">
         <div class="dropdown-section">
-          <h3 class="section-title">CT Scan</h3>
+          <h3 class="section-text">CT Scan</h3>
           <select v-model="selectedCTScan" class="investigation-dropdown">
             <option value="">Specify</option>
-            <option v-for="investigation in ctScanInvestigations" :key="investigation.id" :value="investigation.id">
+            <option
+              v-for="investigation in ctScanInvestigations"
+              :key="investigation.id"
+              :value="investigation.id"
+            >
               {{ investigation.title }}
               <span v-if="investigation.isFromAPI === false">*</span>
             </option>
           </select>
         </div>
-        
+
         <div class="dropdown-section">
-          <h3 class="section-title">MRI</h3>
+          <h3 class="section-text">MRI</h3>
           <select v-model="selectedMRI" class="investigation-dropdown">
             <option value="">Specify</option>
-            <option v-for="investigation in mriInvestigations" :key="investigation.id" :value="investigation.id">
+            <option
+              v-for="investigation in mriInvestigations"
+              :key="investigation.id"
+              :value="investigation.id"
+            >
               {{ investigation.title }}
               <span v-if="investigation.isFromAPI === false">*</span>
             </option>
@@ -102,19 +137,23 @@
       <!-- Fallback Notice -->
       <div v-if="fallbackCount > 0" class="alert alert-light mb-3">
         <small class="text-muted">
-          <strong>Note:</strong> Items marked with * are from design specifications and will be available when backend data is complete.
+          <strong>Note:</strong> Items marked with * are from design
+          specifications and will be available when backend data is complete.
           Only API data will be submitted.
         </small>
       </div>
 
       <div class="text-end mt-4">
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           class="btn btn-primary"
           :disabled="loading || authError"
         >
-          <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
-          {{ loading ? 'Saving...' : 'Save and Send' }}
+          <span
+            v-if="loading"
+            class="spinner-border spinner-border-sm me-2"
+          ></span>
+          {{ loading ? "Saving..." : "Save and Send" }}
         </button>
       </div>
     </form>
@@ -122,9 +161,9 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watch, computed } from 'vue';
-import { gql } from '@apollo/client/core';
-import { useQuery, useMutation } from '@vue/apollo-composable';
+import { ref, reactive, onMounted, watch, computed } from "vue";
+import { gql } from "@apollo/client/core";
+import { useQuery, useMutation } from "@vue/apollo-composable";
 
 // GraphQL queries
 const INVESTIGATIONS_QUERY = gql`
@@ -153,114 +192,133 @@ const UPDATE_RECORD_MUTATION = gql`
   }
 `;
 
-// Fallback data matching the design (will be merged with API data)
 const designFallbackData = {
-  'X-Ray': [
-    'Chest', 'Cervical Vertebrae', 'Thoracic Vertebrae', 'Lumvar Vertebrae',
-    'Lumbo Sacral Vertebrae', 'Thoraco Lumbar Vertebrae', 'Wrist Joint', 'Thoracic Inlet',
-    'Shoulder Joint', 'Elbow Joint', 'Knee Joint', 'Sacro Iliac Joint',
-    'Pelvic Joint', 'Hip Joint', 'Femoral', 'Ankle',
-    'Humerus', 'Radius/Ulner', 'Foot', 'Tibia/Fibula',
-    'Fingers', 'Toes'
+  "X-Ray": [
+    "Chest",
+    "Cervical Vertebrae",
+    "Thoracic Vertebrae",
+    "Lumvar Vertebrae",
+    "Lumbo Sacral Vertebrae",
+    "Thoraco Lumbar Vertebrae",
+    "Wrist Joint",
+    "Thoracic Inlet",
+    "Shoulder Joint",
+    "Elbow Joint",
+    "Knee Joint",
+    "Sacro Iliac Joint",
+    "Pelvic Joint",
+    "Hip Joint",
+    "Femoral",
+    "Ankle",
+    "Humerus",
+    "Radius/Ulner",
+    "Foot",
+    "Tibia/Fibula",
+    "Fingers",
+    "Toes",
   ],
-  'Ultrasound Scan': [
-    'Obstetric', 'Abdominal', 'Pelvis', 'Prostate',
-    'Breast', 'Thyroid'
+  "Ultrasound Scan": [
+    "Obstetric",
+    "Abdominal",
+    "Pelvis",
+    "Prostate",
+    "Breast",
+    "Thyroid",
   ],
-  'CT Scan': [
-    'Head CT', 'Chest CT', 'Abdominal CT', 'Pelvic CT'
-  ],
-  'MRI': [
-    'Brain MRI', 'Spine MRI', 'Joint MRI', 'Abdominal MRI'
-  ]
+  "CT Scan": ["Head CT", "Chest CT", "Abdominal CT", "Pelvic CT"],
+  MRI: ["Brain MRI", "Spine MRI", "Joint MRI", "Abdominal MRI"],
 };
 
-// Component state
 const authError = ref(null);
 const error = ref(null);
 const success = ref(null);
 const selectedInvestigations = ref([]);
-const selectedCTScan = ref('');
-const selectedMRI = ref('');
+const selectedCTScan = ref("");
+const selectedMRI = ref("");
 const showDataStatus = ref(true);
 
-// Use query with error handling
-const { 
-  result, 
-  loading: queryLoading, 
+const {
+  result,
+  loading: queryLoading,
   error: queryError,
-  refetch: refetchQuery
+  refetch: refetchQuery,
 } = useQuery(INVESTIGATIONS_QUERY, null, {
-  errorPolicy: 'all',
-  notifyOnNetworkStatusChange: true
+  errorPolicy: "all",
+  notifyOnNetworkStatusChange: true,
 });
 
-// Use mutation with error handling
-const { 
-  mutate: updateRecord, 
-  loading: mutationLoading 
-} = useMutation(UPDATE_RECORD_MUTATION, {
-  errorPolicy: 'all'
-});
+const { mutate: updateRecord, loading: mutationLoading } = useMutation(
+  UPDATE_RECORD_MUTATION,
+  {
+    errorPolicy: "all",
+  }
+);
 
-// Helper function to create fallback investigation objects
 const createFallbackInvestigation = (title, type, index) => ({
-  id: `fallback_${type.toLowerCase().replace(/\s+/g, '_')}_${index}`,
+  id: `fallback_${type.toLowerCase().replace(/\s+/g, "_")}_${index}`,
   title,
-  type: { id: `fallback_type_${type.toLowerCase().replace(/\s+/g, '_')}`, title: type },
-  isFromAPI: false
+  type: {
+    id: `fallback_type_${type.toLowerCase().replace(/\s+/g, "_")}`,
+    title: type,
+  },
+  isFromAPI: false,
 });
 
-// Helper function to merge API data with fallback data
 const mergeInvestigations = (apiInvestigations, type) => {
   const merged = [];
   const apiTitles = new Set();
-  
-  // Add API investigations first
+
   if (apiInvestigations) {
-    apiInvestigations.forEach(inv => {
+    apiInvestigations.forEach((inv) => {
       merged.push({ ...inv, isFromAPI: true });
       apiTitles.add(inv.title);
     });
   }
-  
-  // Add missing investigations from fallback
+
   if (designFallbackData[type]) {
     designFallbackData[type].forEach((title, index) => {
-      // Handle typo in API data - "Lumvar" should be "Lumbar"
-      const normalizedTitle = title === 'Lumvar Vertebrae' ? 'Lumbar Vartebrae' : title;
-      
+      const normalizedTitle =
+        title === "Lumvar Vertebrae" ? "Lumbar Vartebrae" : title;
+
       if (!apiTitles.has(title) && !apiTitles.has(normalizedTitle)) {
         merged.push(createFallbackInvestigation(title, type, index));
       }
     });
   }
-  
+
   return merged;
 };
 
-// Computed properties for each investigation type
 const xrayInvestigations = computed(() => {
-  const apiXrays = result.value?.investigations?.filter(inv => inv.type.title === 'X-Ray') || [];
-  return mergeInvestigations(apiXrays, 'X-Ray');
+  const apiXrays =
+    result.value?.investigations?.filter((inv) => inv.type.title === "X-Ray") ||
+    [];
+  return mergeInvestigations(apiXrays, "X-Ray");
 });
 
 const ultrasoundInvestigations = computed(() => {
-  const apiUltrasounds = result.value?.investigations?.filter(inv => inv.type.title === 'Ultrasound Scan') || [];
-  return mergeInvestigations(apiUltrasounds, 'Ultrasound Scan');
+  const apiUltrasounds =
+    result.value?.investigations?.filter(
+      (inv) => inv.type.title === "Ultrasound Scan"
+    ) || [];
+  return mergeInvestigations(apiUltrasounds, "Ultrasound Scan");
 });
 
 const ctScanInvestigations = computed(() => {
-  const apiCTScans = result.value?.investigations?.filter(inv => inv.type.title === 'CT Scan') || [];
-  return mergeInvestigations(apiCTScans, 'CT Scan');
+  const apiCTScans =
+    result.value?.investigations?.filter(
+      (inv) => inv.type.title === "CT Scan"
+    ) || [];
+  return mergeInvestigations(apiCTScans, "CT Scan");
 });
 
 const mriInvestigations = computed(() => {
-  const apiMRIs = result.value?.investigations?.filter(inv => inv.type.title === 'MRI') || [];
-  return mergeInvestigations(apiMRIs, 'MRI');
+  const apiMRIs =
+    result.value?.investigations?.filter((inv) => inv.type.title === "MRI") ||
+    [];
+  return mergeInvestigations(apiMRIs, "MRI");
 });
 
-// Statistics for data status
 const apiInvestigationsCount = computed(() => {
   return result.value?.investigations?.length || 0;
 });
@@ -270,27 +328,30 @@ const fallbackCount = computed(() => {
     ...xrayInvestigations.value,
     ...ultrasoundInvestigations.value,
     ...ctScanInvestigations.value,
-    ...mriInvestigations.value
+    ...mriInvestigations.value,
   ];
-  return allInvestigations.filter(inv => !inv.isFromAPI).length;
+  return allInvestigations.filter((inv) => !inv.isFromAPI).length;
 });
 
 const totalInvestigationsCount = computed(() => {
   return apiInvestigationsCount.value + fallbackCount.value;
 });
 
-// Watch for query results
 watch(result, (newValue) => {
   if (newValue?.investigations) {
-    console.log('API Investigations loaded:', newValue.investigations);
-    console.log('Total X-Ray (with fallback):', xrayInvestigations.value);
-    console.log('Total Ultrasound (with fallback):', ultrasoundInvestigations.value);
-    console.log(`Data Status: ${apiInvestigationsCount.value} from API, ${fallbackCount.value} from fallback`);
+    console.log("API Investigations loaded:", newValue.investigations);
+    console.log("Total X-Ray (with fallback):", xrayInvestigations.value);
+    console.log(
+      "Total Ultrasound (with fallback):",
+      ultrasoundInvestigations.value
+    );
+    console.log(
+      `Data Status: ${apiInvestigationsCount.value} from API, ${fallbackCount.value} from fallback`
+    );
     authError.value = null;
   }
 });
 
-// Handle query errors
 watch(queryError, (newError) => {
   if (newError) {
     handleAuthError(newError);
@@ -298,34 +359,36 @@ watch(queryError, (newError) => {
 });
 
 const handleAuthError = (apolloError) => {
-  console.error('GraphQL Error:', apolloError);
-  
-  const isAuthError = 
-    apolloError.message.toLowerCase().includes('unauthorized') ||
-    apolloError.message.toLowerCase().includes('unauthenticated') ||
-    apolloError.message.toLowerCase().includes('not authenticated') ||
-    apolloError.graphQLErrors?.some(e => 
-      e.extensions?.code === 'UNAUTHENTICATED' ||
-      e.extensions?.code === 'UNAUTHORIZED' ||
-      e.message.toLowerCase().includes('auth')
+  console.error("GraphQL Error:", apolloError);
+
+  const isAuthError =
+    apolloError.message.toLowerCase().includes("unauthorized") ||
+    apolloError.message.toLowerCase().includes("unauthenticated") ||
+    apolloError.message.toLowerCase().includes("not authenticated") ||
+    apolloError.graphQLErrors?.some(
+      (e) =>
+        e.extensions?.code === "UNAUTHENTICATED" ||
+        e.extensions?.code === "UNAUTHORIZED" ||
+        e.message.toLowerCase().includes("auth")
     ) ||
     apolloError.networkError?.statusCode === 401 ||
     apolloError.networkError?.statusCode === 403;
 
   if (isAuthError) {
-    authError.value = 'You need to be logged in to access this feature. Please check your authentication.';
+    authError.value =
+      "You need to be logged in to access this feature. Please check your authentication.";
     selectedInvestigations.value = [];
-    selectedCTScan.value = '';
-    selectedMRI.value = '';
+    selectedCTScan.value = "";
+    selectedMRI.value = "";
   } else {
-    error.value = 'Failed to load data: ' + apolloError.message;
+    error.value = "Failed to load data: " + apolloError.message;
   }
 };
 
 const retryQuery = async () => {
   authError.value = null;
   error.value = null;
-  
+
   try {
     await refetchQuery();
   } catch (err) {
@@ -336,72 +399,88 @@ const retryQuery = async () => {
 const saveRecord = async () => {
   error.value = null;
   success.value = null;
-  
+
   if (authError.value) {
-    error.value = 'Please resolve authentication issues before saving.';
+    error.value = "Please resolve authentication issues before saving.";
     return;
   }
-  
+
   try {
-    // Only submit API investigations (filter out fallback data)
-    const apiOnlySelections = selectedInvestigations.value.filter(id => 
-      !id.toString().startsWith('fallback_')
+    const apiOnlySelections = selectedInvestigations.value.filter(
+      (id) => !id.toString().startsWith("fallback_")
     );
-    
+
     const allSelectedIds = [...apiOnlySelections];
-    
-    if (selectedCTScan.value && !selectedCTScan.value.toString().startsWith('fallback_')) {
+
+    if (
+      selectedCTScan.value &&
+      !selectedCTScan.value.toString().startsWith("fallback_")
+    ) {
       allSelectedIds.push(selectedCTScan.value);
     }
-    
-    if (selectedMRI.value && !selectedMRI.value.toString().startsWith('fallback_')) {
+
+    if (
+      selectedMRI.value &&
+      !selectedMRI.value.toString().startsWith("fallback_")
+    ) {
       allSelectedIds.push(selectedMRI.value);
     }
-    
-    // Show warning if user selected fallback items
+
     const fallbackSelections = [
-      ...selectedInvestigations.value.filter(id => id.toString().startsWith('fallback_')),
-      ...(selectedCTScan.value?.toString().startsWith('fallback_') ? [selectedCTScan.value] : []),
-      ...(selectedMRI.value?.toString().startsWith('fallback_') ? [selectedMRI.value] : [])
+      ...selectedInvestigations.value.filter((id) =>
+        id.toString().startsWith("fallback_")
+      ),
+      ...(selectedCTScan.value?.toString().startsWith("fallback_")
+        ? [selectedCTScan.value]
+        : []),
+      ...(selectedMRI.value?.toString().startsWith("fallback_")
+        ? [selectedMRI.value]
+        : []),
     ];
-    
+
     if (fallbackSelections.length > 0) {
-      console.warn(`${fallbackSelections.length} fallback items selected but not submitted:`, fallbackSelections);
+      console.warn(
+        `${fallbackSelections.length} fallback items selected but not submitted:`,
+        fallbackSelections
+      );
     }
-    
+
     const { data, errors } = await updateRecord({
       input: {
-        patientId: 'PATIENT_ID_HERE',
-        investigationIds: allSelectedIds
-      }
+        patientId: "PATIENT_ID_HERE",
+        investigationIds: allSelectedIds,
+      },
     });
-    
+
     if (errors && errors.length > 0) {
-      const authErrors = errors.filter(err => 
-        err.extensions?.code === 'UNAUTHENTICATED' ||
-        err.extensions?.code === 'UNAUTHORIZED'
+      const authErrors = errors.filter(
+        (err) =>
+          err.extensions?.code === "UNAUTHENTICATED" ||
+          err.extensions?.code === "UNAUTHORIZED"
       );
-      
+
       if (authErrors.length > 0) {
-        authError.value = 'Your session has expired. Please log in again.';
+        authError.value = "Your session has expired. Please log in again.";
         return;
       }
-      
-      error.value = 'Failed to update record: ' + errors[0].message;
+
+      error.value = "Failed to update record: " + errors[0].message;
       return;
     }
-    
+
     const submittedCount = allSelectedIds.length;
     const fallbackSkipped = fallbackSelections.length;
-    
-    success.value = `Record updated successfully! Submitted ${submittedCount} investigations.` + 
-      (fallbackSkipped > 0 ? ` (${fallbackSkipped} design items skipped - not yet available in API)` : '');
-    
-    console.log('Record updated:', data.updateMedicalRecord);
-    console.log('Submitted investigations:', allSelectedIds);
-    
+
+    success.value =
+      `Record updated successfully! Submitted ${submittedCount} investigations.` +
+      (fallbackSkipped > 0
+        ? ` (${fallbackSkipped} design items skipped - not yet available in API)`
+        : "");
+
+    console.log("Record updated:", data.updateMedicalRecord);
+    console.log("Submitted investigations:", allSelectedIds);
   } catch (err) {
-    console.error('Update error:', err);
+    console.error("Update error:", err);
     handleAuthError(err);
   }
 };
@@ -418,16 +497,26 @@ const loading = computed(() => queryLoading.value || mutationLoading.value);
 }
 
 .investigation-section {
-  margin-bottom: 40px;
+  margin-bottom: 25px;
+}
+
+.section-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #382f90;
+  margin-bottom: 6px;
+  padding-top: 10px;
+  padding-bottom: 8px;
 }
 
 .section-title {
   font-size: 18px;
   font-weight: 600;
   color: #382f90;
-  margin-bottom: 16px;
+  margin-bottom: 6px;
+  padding-top: 30px;
   padding-bottom: 8px;
-  border-bottom: 2px solid #e5e7eb;
+  border-top: 2px solid #e5e7eb;
 }
 
 .investigation-grid {
@@ -534,7 +623,7 @@ const loading = computed(() => queryLoading.value || mutationLoading.value);
 }
 
 .btn-close:before {
-  content: '×';
+  content: "×";
 }
 
 .alert {
@@ -615,7 +704,7 @@ const loading = computed(() => queryLoading.value || mutationLoading.value);
     grid-template-columns: repeat(2, 1fr);
     gap: 8px 16px;
   }
-  
+
   .dropdown-section {
     display: block;
     margin-right: 0;
@@ -627,7 +716,7 @@ const loading = computed(() => queryLoading.value || mutationLoading.value);
   .investigation-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .investigations-container {
     padding: 16px;
   }
